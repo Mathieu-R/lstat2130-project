@@ -1,0 +1,21 @@
+\section{Introduction}
+
+Cancer cell growth has been studied in vitro in $10$ parallel experiments. 
+We have a collection of data $\mathcal{D}_i$ where $i = 1,\dots,10$ is the ith-experiment and where each $\mathcal{D}_i$ is a time series ranging from $t = 10$ to $t = 500$.
+
+We describe the evolution of the tumor over time by a time-dependent Poisson distribution,
+\begin{equation} \label{eq:pois_model}
+	y(t) \sim \text{Pois}(\mu(t))
+\end{equation}
+
+where,
+\begin{equation} \label{eq:mu_beta}
+	\mu(t) = \beta_0 \exp \left( \frac{\beta_1}{\beta_2} (1 - e^{-\beta_2 t}) \right)
+\end{equation}
+with $\beta_k > 0 (k \in \set{0, 1, 2})$.
+
+Notice we can reparametrize this model as,
+\begin{equation} \label{eq:mu_alpha}
+	\mu(t) = \alpha_0 \exp(-\alpha_1 e^{-\alpha_2 t})
+\end{equation}
+with $\alpha_k > 0 (k \in \set{0, 1, 2})$.

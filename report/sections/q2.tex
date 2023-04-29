@@ -1,0 +1,58 @@
+\subsection*{Question 2}
+
+\textbf{a)} Assuming independence between the data $\mathcal{D}_i$ collected during the experiment $i$ where $\mathcal{D}_i = \set{y_i(t_j): j = 1,\dots,J = 99}$ with $y_i(t_j) \sim \text{Pois}(\mu(t_j))$, provide an analytic form for the likelihood function $L(\vec{\alpha}|\mathcal{D}_i)$ for experiment $i$.
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}
+
+We know that the number of cancer cells $y_{i,j}$ for the experiment $i$ at any given time $t_j$, $j \in \set{10, 15, 20,...,500}$ follow a Poisson distribution of parameter $\mu$. Its probability mass function is given by,
+\begin{equation*}
+	p(y_{i,j}) \propto \mu^{y_{i,j}} \cdot e^{-\mu} 
+\end{equation*}
+where an expression for $\mu$ is given above (\autoref{eq:mu_alpha}) as a function of $\alpha_k (k = 0, 1, 2)$.
+
+Assuming independance, we then have,
+\begin{align*}
+	L(\vec{\alpha}|\mathcal{D}_i) 
+		&= L((\alpha_0, \alpha_1, \alpha_2)|y_i) \\
+		&\propto \prod_{j=1}^{99} p(y_{i, j})^{y_{i, j}} \\
+		&\propto \prod_{j=1}^{99} \left( \mu^{y_{i,j}} \cdot e^{-\mu} \right)^{y_{i, j}}
+\end{align*}
+
+\textbf{b)} Provide a R function enabling to compute the log-likelihood for given parameter values $\theta_k = \log(\alpha_k)$ and data $D_i$.
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}
+
+We have,
+\begin{align*}
+	l(\vec{\alpha}|\mathcal{D}_i) 
+		&:= \ln(L((\alpha_0, \alpha_1, \alpha_2)|y_i)) \\
+		&\propto \sum_{j=1}^{99} \ln\left( \left[ \mu^{y_{i,j}} \cdot e^{-\mu} \right]^{y_{i, j}} \right) \\
+		&= \sum_{j=1}^{99} y_{i, j} \cdot \ln(\mu^{y_{i,j}} \cdot e^{-\mu}) \\
+\end{align*}
+
+\inputminted[frame=lines]{r}{code/q1b.r}
+
+\textbf{c)} Provide a R function enabling to compute the log-posterior $p(\vec{\theta}|\mathcal{D}_i)$ for given $\theta = \theta_0, \theta_1, \theta_2$, data $\mathcal{D}_i$ and large variance priors.
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}
+
+Since we have no information on the proportion of any parameter $\theta_k$, we assume an uniform distribution,
+\begin{equation}
+	\theta_k \sim \text{Unif}(0,1)
+\end{equation}
+
+We find then,
+\begin{align*}
+	p(\vec{\theta}|\mathcal{D}_i)
+		&\propto \ln(L(\vec{\theta}|\mathcal{D}_i) \cdot (P(\theta_0) P(\theta_1) P(\theta_2))) \\
+		&\propto l(\vec{\theta}|\mathcal{D}_i) + \ln(P(\theta_0)) + \ln(P(\theta_1)) + \ln(P(\theta_2)) \\
+		&\propto \sum_{j=1}^{99} y_{i, j} \cdot \ln(\mu^{y_{i,j}} \cdot e^{-\mu}) + \ln(1_{0,1}) + \ln(1_{0,1}) + \ln(1_{0,1})
+\end{align*}
+
+\inputminted[frame=lines]{r}{code/q1c.r}
+
+\textbf{d)} Using the preceding R function, obtain the mean vector and variance-covariance matrix in the Laplace approximation to the marginal posterior $\vec{\theta}$ given the data from experiment 1.
+
+\inputminted{r}{code/q1d.r}
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}

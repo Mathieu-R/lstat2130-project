@@ -1,0 +1,41 @@
+\subsection*{Question 1}
+
+\textbf{a)} Examine $\mu(t)$ and its relative change over time $\frac{1}{\mu(t)} \odv{\mu(t)}{t}$ in order to provide an interpretation for each parameter of (\autoref{eq:mu_beta}).
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}
+
+Let's compute the derivative first,
+\begin{align*}
+	\odv{\mu(t)}{t} 
+		&= \mu(t) \odv{}{t} \left( \frac{\beta_1}{\beta_2} (1 - e^{-\beta_2 t}) \right) \\
+		&=  \frac{\beta_1}{\beta_2} \mu(t) e^{-\beta_2 t} \beta_2 \\
+		&= \beta_1 \mu(t) e^{-\beta_2 t}
+\end{align*}
+
+We then have,
+\begin{equation*}
+	\frac{1}{\mu(t)} \odv{\mu(t)}{t} = \beta_1 e^{-\beta_2 t}
+\end{equation*}
+
+\textbf{b)} Provide the formulas connecting the $\beta_k$ and $\alpha_k$ parameters.
+
+\begin{center}\rule{6cm}{0.4pt}\end{center}
+
+Let's compute the relative change over time of \autoref{eq:mu_alpha},
+\begin{align*}
+	\odv{\mu(t)}{t} = \mu(t) \alpha_1 \alpha_2 e^{-\alpha_2 t}
+\end{align*}
+
+We then have,
+\begin{align*}
+	\frac{1}{\mu(t)} \odv{\mu(t)}{t} = \alpha_1 \alpha_2 e^{-\alpha_2 t}
+\end{align*}
+
+Comparing with the two equations as well as the relative changes over time,
+\begin{equation*}
+	\alpha_1 \alpha_2 e^{-\alpha_2 t} = \beta_1 e^{-\beta_2 t}
+\end{equation*}
+
+\begin{equation*}
+	\beta_0 \exp \left( \frac{\beta_1}{\beta_2} (1 - e^{-\beta_2 t}) \right) = \alpha_0 \exp(-\alpha_1 e^{-\alpha_2 t})
+\end{equation*}

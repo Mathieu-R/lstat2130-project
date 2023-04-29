@@ -1,0 +1,93 @@
+---
+title: "Project LSTAT2130"
+author: "Mathieu"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+library(rjags)
+library(bayesplot)
+library(shinystan)
+
+library(coda)
+library(mvtnorm)
+```
+
+```{r}
+set.seed(123)
+```
+
+```{r}
+df <- read.table("dataset/TumorGrowth.txt")
+head(df)
+```
+
+# 1.b
+
+R function to compute the log-likelihood $L(\vec{\alpha}|\mathcal{D}_i)$ given parameter values $\theta_k = \log(\theta_k)$ and data $D_i$
+```{r}
+mu <- function(alpha, t) {
+  - alpha[1] * exp(- alpha[2] * exp(- alpha[3] * t))
+}
+
+log_likelihood <- function(theta, t, experiment) {
+  n <- length(experiment)
+  alpha <- exp(theta)
+  
+  result <- sum(sapply(1:n, function(j) {
+    experiment[j] * log(mu(alpha = alpha, t = t[j])^experiment[j] * exp(-mu(alpha = alpha, t = t[j])))
+  }))
+  
+  return(result)
+}
+```
+
+# 1.c
+
+```{r}
+prior <- function(theta) {
+  dunif(theta, 0, 1, log = TRUE)
+}
+
+log_posterior <- function(theta, t, experiment) {
+  log_likelihood(theta, t, experiment) + prior(theta[0]) + prior(theta[1]) + prior(theta[2])
+}
+```
+
+# 1.d
+
+```{r}
+laplace_approximation <- function(log_posterior, inits, n_samples, ...) {
+  fit <- optim(
+    par = inits,
+    fn = log_posterior,
+    control = list(fnscale = -1),
+    hessian = TRUE,
+    ...
+  )
+  
+  mean <- fit$param
+  var_cov_matrix <- solve(-fit$hessian)
+  
+  return(list(
+    mean = mean,
+    var_cov_matrix = var_cov_matrix
+  ))
+}
+
+inits <- c(theta0 = 0, theta1 = 0, theta2 = 0)
+lapprox <- laplace_approximation(log_posterior, inits, 10000, t = df$day, experiment = df$Exp1)
+
+lapprox$mean
+lapprox$var_cov_matrix
+
+```
