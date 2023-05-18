@@ -8,37 +8,41 @@ In order to get $\SI{20}{\percent}$ of acceptance rate, we multiplied the varian
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/metropolis_vw_samples.png}
+	\includegraphics[width=0.7\textwidth]{figures/metropolis_vw/metropolis_vw_samples.png}
 	\caption{Random sample from the posterior distribution of $(\vec{\theta}|\mathcal{D}_1)$ using a vector-wise metropolis algorithm}
 	\label{fig:metropolis_vw_samples}
 \end{figure}
 
 \subsubsection*{Convergence}
 
+From the visual analysis, we have a good mixing which is a good signal of convergence.
+
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_vw_traceplot_theta0}
+		\includegraphics{figures/metropolis_vw/metropolis_vw_traceplot_theta0}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_vw_traceplot_theta1}
+		\includegraphics{figures/metropolis_vw/metropolis_vw_traceplot_theta1}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_vw_traceplot_theta2}
+		\includegraphics{figures/metropolis_vw/metropolis_vw_traceplot_theta2}
 	\end{subfigure}
 	\caption{Traceplots of the $\theta_k$ parameters}
 	\label{fig:metropolis-vw-traceplots}
 \end{figure}
 
+Moreover, the $\hat{R}$ computed from the Gelman statistic is below $1.1$ and we notice from the Geweke test that at a $\SI{5}{\percent}$ significance level, we cannot reject the null hypothesis that the mean of the two computed subchains are equal for each parameter. Therefore we have a strong confidence in the convergence of the metropolis vector-wise algorithm.
+
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 
 		parameters & $\hat{R}$ & upper C.I. \\ \hline
-		$\theta_0$ & $1.000833$ & $1.002573$ \\
-		$\theta_1$ & $1.005029$ & $1.016367$ \\
-		$\theta_2$ & $1.001695$ & $1.005931$ \\ \hline
+		$\theta_0$ & $1.000513$ & $1.000901$ \\
+		$\theta_1$ & $1.001974$ & $1.002180$ \\
+		$\theta_2$ & $1.000653$ & $1.001020$ \\ \hline
 	\end{tabular}
 	\caption{Results of the Gelbman-Rubin test}
 	\label{tab:metropolis-vw-gelman-rubin}
@@ -46,38 +50,44 @@ In order to get $\SI{20}{\percent}$ of acceptance rate, we multiplied the varian
 
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 
-		$\theta_0$ & $\theta_1$ & $\theta_2$ \\ \hline 
-		$-1.1272$   &   $-0.1770$	&   $0.7131$ \\ \hline
+		parameters & z-score & p-value \\ \hline
+		$\theta_0$ & $-0.4956$ & $0.6899117$ \\
+		$\theta_1$ & $-1.7949$ & $0.9636652$ \\
+		$\theta_2$ & $-0.4138$ & $0.6604897$ \\ \hline
 	\end{tabular}
 	\caption{Results for the Geweke statistic (z-score)}
 	\label{tab:metropolis-cw-geweke}
+\end{table}
+
+Finally, we have at least $500$ effective samples for each parameter.
+
+\begin{table}[H]
+	\centering\begin{tabular}{|c|c|c|} \hline 
+		$\theta_0$ & $\theta_1$ & $\theta_2$ \\ \hline 
+		$1682.979$  & $504.130$ & $1282.254$   \\ \hline
+	\end{tabular}
+	\caption{Effective sample sizes}
+	\label{tab:metropolis-vw-effective-sample-sizes}
 \end{table}
 
 \textbf{b)} Compare your results with the previous ones.
 
 \begin{center}\rule{6cm}{0.4pt}\end{center}
 
-\subsubsection*{Effective sample size}
-
-\begin{table}[H]
-	\centering\begin{tabular}{|c|c|c|} \hline 
-		$\theta_0$ & $\theta_1$ & $\theta_2$ \\ \hline 
-		$1550.8856$  & $495.6665$ & $1225.5307$   \\ \hline
-	\end{tabular}
-	\caption{Effective sample sizes}
-	\label{tab:metropolis-vw-effective-sample-sizes}
-\end{table}
-
 \subsubsection*{Fitted curve}
+
+The mean for each $\bm{\theta}$ parameter is the same as for the component-wise algorithm. Therefore, as expected, the growth rate of cancer cells is again underestimate by our model.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/metropolis_vw_fitted_curve.png}
+	\includegraphics[width=0.7\textwidth]{figures/metropolis_vw/metropolis_vw_fitted_curve.png}
 	\caption{Comparison of the observed count data series for experiment 1 (\textit{black}) with the fitted curve for $\mu(t)$ (\textit{red})}
 	\label{fig:metropolis-vw-fitted-curve}
 \end{figure}
 
 \subsubsection*{Point estimate and $\SI{95}{\percent}$ credible region}
+
+Following what we said above, obviously we get the point estimate and credible regions for the $\bm{\beta}$ parameters.
 
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 

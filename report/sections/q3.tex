@@ -6,12 +6,11 @@
 
 \inputminted[breaklines]{r}{code/q3a.r}
 
-% TODO: show which starting values we used to have ~ 40% of acceptance rate
 For the single component metropolis algorithm, we should aim for $\approx \SI{40}{\percent}$ of acceptance rate. We ran the algorithm for $\num{140000}$ steps and a burnin of $\num{5000}$ steps. In order to have such an acceptance rate for each $\theta$ parameter, we tweaked the sigma proposals to finally start with $\sigma = (0.017, 0.021, 0.019)$ giving us an acceptance rate of $(\SI{40}{\percent}, \SI{40}{\percent}, \SI{40}{\percent})$ respectively for $(\theta_0, \theta_1, \theta_2)$.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics{figures/metropolis_cw_samples.png}
+	\includegraphics{figures/metropolis_cw/metropolis_cw_samples.png}
 	\caption{Random sample from the posterior distribution of $(\vec{\theta}|\mathcal{D}_1)$ using a component-wise metropolis algorithm}
 	\label{fig:metropolis_cw_samples}
 \end{figure}
@@ -30,15 +29,15 @@ We can first perform a visual analysis to check for the convergence of the metro
 	\centering
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_cw_traceplot_theta0}
+		\includegraphics{figures/metropolis_cw/metropolis_cw_traceplot_theta0}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_cw_traceplot_theta1}
+		\includegraphics{figures/metropolis_cw/metropolis_cw_traceplot_theta1}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\centering
-		\includegraphics{figures/metropolis_cw_traceplot_theta2}
+		\includegraphics{figures/metropolis_cw/metropolis_cw_traceplot_theta2}
 	\end{subfigure}
 	\caption{Traceplots of the $\theta_k$ parameters}
 	\label{fig:metropolis-cw-traceplots}
@@ -57,9 +56,9 @@ Here, we created three chains using different initial parameters for $\bm{\theta
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 
 		parameters & $\hat{R}$ & upper C.I. \\ \hline
-		$\theta_0$ & $1.001835$ & $1.004397$ \\
-		$\theta_1$ & $1.000363$ & $1.001326$ \\
-		$\theta_2$ & $1.001748$ & $1.004740$ \\ \hline
+		$\theta_0$ & $1.001888$ & $1.006282$ \\
+		$\theta_1$ & $1.000398$ & $1.001150$ \\
+		$\theta_2$ & $1.002163$ & $1.006658$ \\ \hline
 	\end{tabular}
 	\caption{Results of the Gelbman-Rubin test}
 	\label{tab:metropolis-cw-gelman-rubin}
@@ -69,7 +68,7 @@ Moreover, we can notice below that the convergence appears after roughly $5000$ 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics{figures/metropolis_cw_gelman-plot.png}
+	\includegraphics{figures/metropolis_cw/metropolis_cw_gelman-plot.png}
 	\caption{Evolution of the Gelman-Rubin shrink factor with the number of iterations of the metropolis algorithm (component-wise)}
 	\label{<label>}
 \end{figure}
@@ -80,14 +79,16 @@ The Geweke statistic has the particularity to assess convergence from a single c
 
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 
-		$\theta_0$ & $\theta_1$ & $\theta_2$ \\ \hline 
-		$1.861$   &   $-3.517$	&   $-1.953$ \\ \hline
+		parameters & z-score & p-value \\ \hline
+		$\theta_0$ & $-1.3259$ & $0.9075636$ \\
+		$\theta_1$ & $-0.5802$ & $0.7191101$ \\
+		$\theta_2$ & $1.1019$ &  $0.1352526$ \\ \hline
 	\end{tabular}
 	\caption{Results for the Geweke statistic (z-score)}
 	\label{tab:metropolis-cw-geweke}
 \end{table}
 
-We notice that the z-score for each parameter $\theta$ is between $-2$ and $2$ so that we can assess that the means of the two subchains are the same. To conclude, none of these statistcs showed us that our algorithm did not converge into the stationnary distribution. We can be confident and go further.
+We notice that at a $\SI{5}{\percent}$ significance level, one cannot reject the hypothesis that the means of the two subchains are equal the z-score. To conclude, none of these statistcs showed us that our algorithm did not converge into the stationnary distribution. We can be confident and go further.
 
 % \begin{figure}[H]
 % 	\centering
@@ -103,7 +104,7 @@ Computing the effective sample size (\textit{i.e. the number of samples that wou
 \begin{table}[H]
 	\centering\begin{tabular}{|c|c|c|} \hline 
 		$\theta_0$ & $\theta_1$ & $\theta_2$ \\ \hline 
-		$648.9857$  & $4629.7723$ & $671.2244$   \\ \hline
+		$683.7875$  & $4121.8599$ & $648.4315$   \\ \hline
 	\end{tabular}
 	\caption{Effective sample sizes}
 	\label{tab:metropolis-cw-effective-sample-sizes}
@@ -115,7 +116,7 @@ Computing the effective sample size (\textit{i.e. the number of samples that wou
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/metropolis_cw_fitted_curve.png}
+	\includegraphics[width=0.7\textwidth]{figures/metropolis_cw/metropolis_cw_fitted_curve.png}
 	\caption{Comparison of the observed count data series for experiment 1 (\textit{black}) with the fitted curve for $\mu(t)$ (\textit{red})}
 	\label{fig:metropolis-cv-fitted-curve}
 \end{figure}
@@ -126,26 +127,34 @@ On the plot above, it seems like the fitted curve for $\mu(t)$ computed with the
 
 \begin{center}\rule{6cm}{0.4pt}\end{center}
 
-\begin{table}[H]
-	\centering\begin{tabular}{|c|c|c|} \hline 
-		Parameter & Median & Mean \\ \hline 
-		$\theta_0$ & $6.37$ & $6.37$ \\ 
-		$\theta_1$ & $1.17$ & $1.17$ \\
-		$\theta_2$ & $-5.21$ & $-5.21$ \\ \hline
-	\end{tabular}
-	\caption{Point estimates of $\bm{\theta}$ parameters}
-	\label{tab:metropolis-cw-point-estimates}
-\end{table}
+From the obtained sample from the metropolis algorithm, we can compute the mean and median of the $\bm{\theta}$ parameters as well as their respective $\SI{95}{\percent}$ credible regions.  Using the relations found in the first question, we can then find these quantity for the $\bm{\beta}$ parameters. The results are summarized in the tables below.
+
+%TODO: put the right value
 
 \begin{table}[H]
-	\centering\begin{tabular}{|c|c|c|} \hline 
-		Parameter & Lower & Upper \\ \hline 
-		$\theta_0$ & $6.31$ & $6.42$ \\ 
-		$\theta_1$ & $1.14$ & $1.19$ \\
-		$\theta_2$ & $-5.28$ & $-5.13$ \\ \hline
-	\end{tabular}
-	\caption{$\SI{95}{\percent}$ credible region for $\bm{\theta}$ parameters}
-	\label{tab:metropolis-cw-credible-region}
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter & Median & Mean \\ \hline 
+			$\beta_0$ & $6.37$ & $6.37$ \\ 
+			$\beta_1$ & $1.17$ & $1.17$ \\
+			$\beta_2$ & $-5.21$ & $-5.21$ \\ \hline
+		\end{tabular}
+		\caption{Point estimates of $\bm{\beta}$}
+		\label{tab:metropolis-cw-point-estimates}
+	}
+	\hfill
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter & Lower & Upper \\ \hline 
+			$\beta_0$ & $6.31$ & $6.42$ \\ 
+			$\beta_1$ & $1.14$ & $1.19$ \\
+			$\beta_2$ & $-5.28$ & $-5.13$ \\ \hline
+		\end{tabular}
+		\caption{$\SI{95}{\percent}$ credible region for $\bm{\beta}$}
+		\label{tab:metropolis-cw-credible-region}
+	}
 \end{table}
 
 \textbf{e)} Provide a point estimates and $\SI{95}{\percent}$ credible region for the expected number of cancer cells at time $t = 0$ and $t = +\infty$ for experiment $1$.

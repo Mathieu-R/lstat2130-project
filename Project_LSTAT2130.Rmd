@@ -82,8 +82,7 @@ log.prior <- function(theta) {
   theta1 <- theta[2]
   theta2 <- theta[3]
   
-  #prior.theta0 <- dunif(theta0, -100, 100, log = TRUE)
-  prior.theta0 <- dnorm(theta0, mean = 0, sd= 10, log = TRUE)
+  prior.theta0 <- dnorm(theta0, mean = 0, sd = 10, log = TRUE)
   prior.theta1 <- dnorm(theta1, mean = 0, sd = 10, log = TRUE)
   prior.theta2 <- dnorm(theta2, mean = 0, sd = 10, log = TRUE)
   
@@ -219,10 +218,9 @@ metropolis.cw <- function(theta.init, sd.proposals, t, experiment, n_steps) {
 ```
 
 ```{r}
-#sd.proposals <- c(0.017, 0.28, 0.023)
 sd.proposals <- c(0.017, 0.021, 0.019)
 
-metropolis.results.q3 <- metropolis.cw(
+metropolis.cw.results <- metropolis.cw(
   #theta.init = c(5.5, 0.98, 0.01),
   theta.init = lapprox$mean,
   sd.proposals = sd.proposals,
@@ -232,27 +230,27 @@ metropolis.results.q3 <- metropolis.cw(
 )
 
 # goal is to reach an acceptance rate of 0.4
-metropolis.results.q3$accept.rate
+metropolis.cw.results$accept.rate
 ```
 
 ```{r}
 # burnin
-metropolis.results.q3$theta.burnin <- metropolis.results.q3$theta[-BURNIN, ]
+metropolis.cw.results$theta.burnin <- metropolis.cw.results$theta[-BURNIN, ]
 
-metropolis.q3.mcmc <- mcmc(metropolis.results$theta.burnin)
-metropolis.q3.mcmc.df <- data.frame(metropolis.mcmc)
+# mcmc
+metropolis.cw.mcmc <- mcmc(metropolis.cw.results$theta.burnin)
 ```
 
 ```{r}
-p1 <- ggplot(metropolis.q3.mcmc.df, aes(x = theta0)) +
+p1 <- ggplot(data.frame(metropolis.cw.mcmc), aes(x = theta0)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
-p2 <- ggplot(metropolis.q3.mcmc.df, aes(x = theta1)) +
+p2 <- ggplot(data.frame(metropolis.cw.mcmc), aes(x = theta1)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
-p3 <- ggplot(metropolis.q3.mcmc.df, aes(x = theta2)) +
+p3 <- ggplot(data.frame(metropolis.cw.mcmc), aes(x = theta2)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
@@ -264,12 +262,12 @@ p1 + p2 + p3 + plot_layout(ncol = 2)
 ### Visual analysis
 
 ```{r}
-traceplot(metropolis.mcmc)
+traceplot(metropolis.cw.mcmc)
 ```
 
 ### Gelman-Rubin statistic
 ```{r}
-chain1.q3 <- metropolis.cw(
+chain1.cw <- metropolis.cw(
   theta.init = lapprox$mean,
   sd.proposals = sd.proposals,
   t = df$day,
@@ -277,7 +275,7 @@ chain1.q3 <- metropolis.cw(
   n_steps = N_STEPS
 )
 
-chain2.q3 <- metropolis.cw(
+chain2.cw <- metropolis.cw(
   theta.init = lapprox$mean - 1,
   sd.proposals = sd.proposals,
   t = df$day,
@@ -285,7 +283,7 @@ chain2.q3 <- metropolis.cw(
   n_steps = N_STEPS
 )
 
-chain3.q3 <- metropolis.cw(
+chain3.cw <- metropolis.cw(
   theta.init = lapprox$mean + 1,
   sd.proposals = sd.proposals,
   t = df$day,
@@ -296,40 +294,47 @@ chain3.q3 <- metropolis.cw(
 
 ```{r}
 # burnin
-chain1.q3$theta.burnin <- chain1.q3$theta[-BURNIN, ]
-chain2.q3$theta.burnin <- chain2.q3$theta[-BURNIN, ]
-chain3.q3$theta.burnin <- chain3.q3$theta[-BURNIN, ]
+chain1.cw$theta.burnin <- chain1.cw$theta[-BURNIN, ]
+chain2.cw$theta.burnin <- chain2.cw$theta[-BURNIN, ]
+chain3.cw$theta.burnin <- chain3.cw$theta[-BURNIN, ]
 ```
 
 
 ```{r}
-chain.q3.list <- list(
-  mcmc(chain1.q3$theta.burnin), 
-  mcmc(chain2.q3$theta.burnin),
-  mcmc(chain3.q3$theta.burnin)
+chain.cw.list <- list(
+  mcmc(chain1.cw$theta.burnin), 
+  mcmc(chain2.cw$theta.burnin),
+  mcmc(chain3.cw$theta.burnin)
 )
 
-traceplot(chain.q3.list)
-gelman.diag(chain.q3.list)$psrf
-gelman.plot(chain.q3.list)
+traceplot(chain.cw.list)
+gelman.diag(chain.cw.list)$psrf
+gelman.plot(chain.cw.list)
 ```
 
 ### Geweke statistic
 
 ```{r}
-geweke.diag(metropolis.q3.mcmc)
-geweke.plot(metropolis.q3.mcmc)
+geweke.diag(metropolis.cw.mcmc)
+geweke.plot(metropolis.cw.mcmc)
+```
+
+```{r}
+# computing p-value of the z-score (to know if the two means are equal)
+pnorm(-1.3259, mean = 0, sd = 1, lower.tail = FALSE)
+pnorm(-0.5802, mean = 0, sd = 1, lower.tail = FALSE)
+pnorm(1.1019, mean = 0, sd = 1, lower.tail = FALSE)
 ```
 
 ### Effective sample sizes
 ```{r}
-effectiveSize(metropolis.q3.mcmc)
+effectiveSize(metropolis.cw.mcmc)
 ```
 
 ### 3.c
 
 ```{r}
-theta.mean <- colMeans(metropolis.results.q3$theta.burnin)
+theta.mean <- colMeans(metropolis.cw.results$theta.burnin)
 alpha.mean <- exp(theta.mean)
 
 ggplot(df) +
@@ -346,18 +351,18 @@ ggplot(df) +
 ### 3.d
 
 ```{r}
-point_estimate(metropolis.q3.mcmc)
+point_estimate(metropolis.cw.mcmc)
 ```
 
 ```{r}
 # 95% credible regions
-HPDinterval(metropolis.q3.mcmc)
+HPDinterval(metropolis.cw.mcmc)
 ```
 
 ### 3.e
 
 ```{r}
-metropolis.results.q3.t0 <- metropolis.cw(
+metropolis.cw.results.t0 <- metropolis.cw(
   theta.init = c(5.5, 0.98, 0.01),
   sd.proposals = sd.proposals,
   t = c(0),
@@ -366,13 +371,13 @@ metropolis.results.q3.t0 <- metropolis.cw(
 )
 
 # goal is to reach an acceptance rate of 0.4
-metropolis.results.q3.t0$accept.rate
+metropolis.cw.results.t0$accept.rate
 ```
 
 ```{r}
 max.int <- as.integer64(.Machine$integer.max) + 1L
 
-metropolis.results.q3.tinf <- metropolis.cw(
+metropolis.cw.results.tinf <- metropolis.cw(
   theta.init = c(5.5, 0.98, 0.01),
   sd.proposals = sd.proposals,
   t = c(max.int),
@@ -381,7 +386,7 @@ metropolis.results.q3.tinf <- metropolis.cw(
 )
 
 # goal is to reach an acceptance rate of 0.4
-metropolis.results.q3.tinf$accept.rate
+metropolis.cw.results.tinf$accept.rate
 ```
 
 ### 4.a
@@ -425,7 +430,7 @@ metropolis.vw <- function(theta.init, sd.proposals, mult.factor, t, experiment, 
 ```
 
 ```{r}
-metropolis.results.q4 <- metropolis.vw(
+metropolis.vw.results <- metropolis.vw(
   theta.init = lapprox$mean,
   sd.proposals = diag(lapprox$var_cov_matrix),
   mult.factor = 20,
@@ -435,26 +440,27 @@ metropolis.results.q4 <- metropolis.vw(
 )
 
 # we should aim for 20% of acceptance rate
-metropolis.results$accept.rate
+metropolis.vw.results$accept.rate
 ```
 
 ```{r}
-metropolis.results.q4$theta.burnin <- metropolis.results.q4$theta[-BURNIN, ]
+# burnin
+metropolis.vw.results$theta.burnin <- metropolis.vw.results$theta[-BURNIN, ]
 
-metropolis.mcmc.q4 <- mcmc(metropolis.results$theta.burnin)
-metropolis.mcmc.q4.df <- data.frame(metropolis.mcmc)
+# mcmc
+metropolis.vw.mcmc <- mcmc(metropolis.vw.results$theta.burnin)
 ```
 
 ```{r}
-p1 <- ggplot(metropolis.mcmc.q4.df, aes(x = theta0)) +
+p1 <- ggplot(data.frame(metropolis.vw.mcmc), aes(x = theta0)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
-p2 <- ggplot(metropolis.mcmc.q4.df, aes(x = theta1)) +
+p2 <- ggplot(data.frame(metropolis.vw.mcmc), aes(x = theta1)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
-p3 <- ggplot(metropolis.mcmc.q4.df, aes(x = theta2)) +
+p3 <- ggplot(data.frame(metropolis.vw.mcmc), aes(x = theta2)) +
   geom_histogram(aes(y = ..density..), color = "black", fill = "white") +
   geom_density(color = "seagreen", size = 1)
 
@@ -466,12 +472,12 @@ p1 + p2 + p3 + plot_layout(ncol = 2)
 ### Visual analysis
 
 ```{r}
-traceplot(metropolis.mcmc.q4)
+traceplot(metropolis.vw.mcmc)
 ```
 
 ### Gelman-Rubin statistic
 ```{r}
-chain1.q4 <- metropolis.vw(
+chain1.vw <- metropolis.vw(
   theta.init = lapprox$mean,
   sd.proposals = diag(lapprox$var_cov_matrix),
   mult.factor = 20,
@@ -480,7 +486,7 @@ chain1.q4 <- metropolis.vw(
   n_steps = N_STEPS
 )
 
-chain2.q4 <- metropolis.vw(
+chain2.vw <- metropolis.vw(
   theta.init = lapprox$mean - 1,
   sd.proposals = diag(lapprox$var_cov_matrix),
   mult.factor = 20,
@@ -489,7 +495,7 @@ chain2.q4 <- metropolis.vw(
   n_steps = N_STEPS
 )
 
-chain3.q4 <- metropolis.vw(
+chain3.vw <- metropolis.vw(
   theta.init = lapprox$mean + 1,
   sd.proposals = diag(lapprox$var_cov_matrix),
   mult.factor = 20,
@@ -501,40 +507,45 @@ chain3.q4 <- metropolis.vw(
 
 ```{r}
 # burnin
-chain1$theta.burnin <- chain1$theta[-BURNIN, ]
-chain2$theta.burnin <- chain2$theta[-BURNIN, ]
-chain3$theta.burnin <- chain3$theta[-BURNIN, ]
+chain1.vw$theta.burnin <- chain1.vw$theta[-BURNIN, ]
+chain2.vw$theta.burnin <- chain2.vw$theta[-BURNIN, ]
+chain3.vw$theta.burnin <- chain3.vw$theta[-BURNIN, ]
 ```
 
 
 ```{r}
-chain.list <- list(
-  mcmc(chain1$theta.burnin), 
-  mcmc(chain2$theta.burnin),
-  mcmc(chain3$theta.burnin)
+chain.vw.list <- list(
+  mcmc(chain1.vw$theta.burnin), 
+  mcmc(chain2.vw$theta.burnin),
+  mcmc(chain3.vw$theta.burnin)
 )
 
-traceplot(chain.list)
-gelman.diag(chain.list)$psrf
-gelman.plot(chain.list)
+traceplot(chain.vw.list)
+gelman.diag(chain.vw.list)$psrf
+gelman.plot(chain.vw.list)
 ```
 
 ### Geweke statistic
 
 ```{r}
-geweke.diag(metropolis.mcmc)
-geweke.plot(metropolis.mcmc)
+# z-score
+geweke.diag(metropolis.vw.mcmc)
+geweke.plot(metropolis.vw.mcmc)
+```
+```{r}
+# computing p-value of the z-score (to know if the two means are equal)
+pnorm(-0.4956, mean = 0, sd = 1, lower.tail = FALSE)
+pnorm(-1.7949, mean = 0, sd = 1, lower.tail = FALSE)
+pnorm(-0.4138, mean = 0, sd = 1, lower.tail = FALSE)
 ```
 
 ### Effective sample sizes
 ```{r}
-effectiveSize(metropolis.mcmc)
+effectiveSize(metropolis.vw.mcmc)
 ```
 
-### 3.c
-
 ```{r}
-theta.mean <- colMeans(metropolis.results$theta.burnin)
+theta.mean <- colMeans(metropolis.vw.results$theta.burnin)
 alpha.mean <- exp(theta.mean)
 
 ggplot(df) +
@@ -548,15 +559,13 @@ ggplot(df) +
   theme_minimal()
 ```
 
-### 3.d
-
 ```{r}
-point_estimate(metropolis.mcmc)
+point_estimate(metropolis.vw.mcmc)
 ```
 
 ```{r}
 # 95% credible regions
-HPDinterval(metropolis.mcmc)
+HPDinterval(metropolis.vw.mcmc)
 ```
 
 ### 5.a. 
@@ -565,17 +574,21 @@ HPDinterval(metropolis.mcmc)
 # jags code
 model_string <- "
   model {
+    alpha0 <- exp(theta0)
+    alpha1 <- exp(theta1)
+    alpha2 <- exp(theta2)
+  
     # likelihood
     for (i in 1:n) {
       y[i] ~ dpois(mu[i])
-      logit(mu[i]) <- log(alpha0) - alpha1 * exp(- alpha2 * t[i])
+      log(mu[i]) <- log(alpha0) - (alpha1 * exp(- alpha2 * t[i]))
     }
     
     # Priors (non-informative, large variance)
     tau <- 1 / 10^2
-    alpha0 ~ dnorm(0, tau)
-    alpha1 ~ dnorm(0, tau)
-    alpha2 ~ dnorm(0, tau)
+    theta0 ~ dnorm(0, tau)
+    theta1 ~ dnorm(0, tau)
+    theta2 ~ dnorm(0, tau)
   }
 "
 
@@ -585,7 +598,7 @@ model_data <- list(
 )
 
 # parameters to watch
-model_parameters <- c("alpha0", "alpha1", "alpha2")
+model_parameters <- c("theta0", "theta1", "theta2")
 
 # let's run the model
 model_run <- jags(
@@ -616,11 +629,37 @@ traceplot(model_run)
 gelman.diag(model_run.mcmc)$psrf
 gelman.plot(model_run.mcmc)
 ```
+### Effective sample size
+```{r}
+effectiveSize(model_run.mcmc)
+```
 
+### Fitted curve
 ```{r}
 posterior <- print(model_run)
 
-alpha0.mean <- posterior$mean$alpha0
-alpha1.mean <- posterior$mean$alpha1
-alpha2.mean <- posterior$mean$alpha2
+theta0.mean <- posterior$mean$theta0
+theta1.mean <- posterior$mean$theta1
+theta2.mean <- posterior$mean$theta2
+
+theta.mean <- c(theta0.mean, theta1.mean, theta2.mean)
+alpha.mean <- exp(theta.mean)
+
+ggplot(df) +
+  geom_line(aes(x = day, y = Exp1, colour = "count data series")) +
+  stat_function(aes(t = day, colour = "fitted curve"), fun = function(t) exp(log.mu(alpha.mean, t))) +
+  labs(
+    title = "Number of cancer cells as function of time (Experiment 1)",
+    x = "Day",
+    y = "Number of cancer cells"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+point_estimate(model_run.mcmc)
+```
+
+```{r}
+HPDinterval(model_run.mcmc)
 ```
