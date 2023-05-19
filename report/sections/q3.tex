@@ -127,18 +127,16 @@ On the plot above, it seems like the fitted curve for $\mu(t)$ computed with the
 
 \begin{center}\rule{6cm}{0.4pt}\end{center}
 
-From the obtained sample from the metropolis algorithm, we can compute the mean and median of the $\bm{\theta}$ parameters as well as their respective $\SI{95}{\percent}$ credible regions.  Using the relations found in the first question, we can then find these quantity for the $\bm{\beta}$ parameters. The results are summarized in the tables below.
-
-%TODO: put the right value
+Using the relations found in the first question, we can find the estimations for the $\bm{\beta}$ parameters. We can then compute the mean and median of the $\bm{\theta}$ parameters as well as their respective $\SI{95}{\percent}$ credible regions.   The results are summarized in the tables below.
 
 \begin{table}[H]
 	\parbox{0.45\linewidth}{
 		\centering
 		\begin{tabular}{|c|c|c|} \hline 
 			Parameter & Median & Mean \\ \hline 
-			$\beta_0$ & $6.37$ & $6.37$ \\ 
-			$\beta_1$ & $1.17$ & $1.17$ \\
-			$\beta_2$ & $-5.21$ & $-5.21$ \\ \hline
+			$\beta_0$ & $23.25$ & $23.28$ \\ 
+			$\beta_1$ & $0.02$ & $0.02$ \\
+			$\beta_2$ & $\num{5.46e-3}$ & $\num{5.46e-3}$ \\ \hline
 		\end{tabular}
 		\caption{Point estimates of $\bm{\beta}$}
 		\label{tab:metropolis-cw-point-estimates}
@@ -148,9 +146,9 @@ From the obtained sample from the metropolis algorithm, we can compute the mean 
 		\centering
 		\begin{tabular}{|c|c|c|} \hline 
 			Parameter & Lower & Upper \\ \hline 
-			$\beta_0$ & $6.31$ & $6.42$ \\ 
-			$\beta_1$ & $1.14$ & $1.19$ \\
-			$\beta_2$ & $-5.28$ & $-5.13$ \\ \hline
+			$\beta_0$ & $20.5347$ & $26.0316$ \\ 
+			$\beta_1$ & $0.0160$ & $0.0191$ \\
+			$\beta_2$ & $0.0050$ & $0.0058$ \\ \hline
 		\end{tabular}
 		\caption{$\SI{95}{\percent}$ credible region for $\bm{\beta}$}
 		\label{tab:metropolis-cw-credible-region}

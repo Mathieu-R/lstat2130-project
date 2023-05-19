@@ -56,7 +56,7 @@ Moreover, the $\hat{R}$ computed from the Gelman statistic is below $1.1$ and we
 		$\theta_2$ & $-0.4138$ & $0.6604897$ \\ \hline
 	\end{tabular}
 	\caption{Results for the Geweke statistic (z-score)}
-	\label{tab:metropolis-cw-geweke}
+	\label{tab:metropolis-vw-geweke}
 \end{table}
 
 Finally, we have at least $500$ effective samples for each parameter.
@@ -90,23 +90,27 @@ The mean for each $\bm{\theta}$ parameter is the same as for the component-wise 
 Following what we said above, obviously we get the point estimate and credible regions for the $\bm{\beta}$ parameters.
 
 \begin{table}[H]
-	\centering\begin{tabular}{|c|c|c|} \hline 
-		Parameter & Median & Mean \\ \hline 
-		$\theta_0$ & $6.37$ & $6.37$ \\ 
-		$\theta_1$ & $1.17$ & $1.17$ \\
-		$\theta_2$ & $-5.21$ & $-5.21$ \\ \hline
-	\end{tabular}
-	\caption{Point estimates of $\bm{\theta}$ parameters}
-	\label{tab:metropolis-cw-point-estimates}
-\end{table}
-
-\begin{table}[H]
-	\centering\begin{tabular}{|c|c|c|} \hline 
-		Parameter & Lower & Upper \\ \hline 
-		$\theta_0$ & $6.31$ & $6.42$ \\ 
-		$\theta_1$ & $1.14$ & $1.19$ \\
-		$\theta_2$ & $-5.28$ & $-5.13$ \\ \hline
-	\end{tabular}
-	\caption{$\SI{95}{\percent}$ credible region for $\bm{\theta}$ parameters}
-	\label{tab:metropolis-cw-credible-region}
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter & Median & Mean \\ \hline 
+			$\beta_0$ & $23.24$ & $23.28$ \\ 
+			$\beta_1$ & $0.02$ & $0.02$ \\
+			$\beta_2$ & $\num{5.46e-3}$ & $\num{5.46e-3}$ \\ \hline
+		\end{tabular}
+		\caption{Point estimates of $\bm{\beta}$}
+		\label{tab:metropolis-vw-point-estimates}
+	}
+	\hfill
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter & Lower & Upper \\ \hline 
+			$\beta_0$ & $20.3473$ & $26.9723$ \\ 
+			$\beta_1$ & $0.0159$ & $0.0191$ \\
+			$\beta_2$ & $0.0050$ & $0.0058$ \\ \hline
+		\end{tabular}
+		\caption{$\SI{95}{\percent}$ credible region for $\bm{\beta}$}
+		\label{tab:metropolis-vw-credible-region}
+	}
 \end{table}

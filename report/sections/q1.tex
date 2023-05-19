@@ -26,16 +26,58 @@ Let's compute the relative change over time of \autoref{eq:mu_alpha},
 	\odv{\mu(t)}{t} = \mu(t) \alpha_1 \alpha_2 e^{-\alpha_2 t}
 \end{align*}
 
-We then have,
+we then have,
 \begin{align*}
 	\frac{1}{\mu(t)} \odv{\mu(t)}{t} = \alpha_1 \alpha_2 e^{-\alpha_2 t}
 \end{align*}
 
-Comparing with the two equations as well as the relative changes over time,
-\begin{equation*}
-	\alpha_1 \alpha_2 e^{-\alpha_2 t} = \beta_1 e^{-\beta_2 t}
-\end{equation*}
+Computing the limits toward zero for the two relative changes, we get,
+\begin{equation} \label{eq:rel-changes-lim-zero}
+	\beta_1 = \alpha_1 \alpha_2
+\end{equation}
 
-\begin{equation*}
-	\beta_0 \exp \left( \frac{\beta_1}{\beta_2} (1 - e^{-\beta_2 t}) \right) = \alpha_0 \exp(-\alpha_1 e^{-\alpha_2 t})
-\end{equation*}
+Computing the limits toward zero for the two $\mu(t)$ formulas we get,
+\begin{equation}
+	\ln\left( \frac{\beta_0}{\alpha_0} \right) = -\alpha_1
+\end{equation}
+
+We can then compute the limits toward infinity for the two $\mu(t)$ formulas,
+\begin{equation}
+	\ln\left(  \frac{\beta_0}{\alpha_0} \right) = - \frac{\beta_1}{\beta_2}
+\end{equation}
+
+We then get, 
+\begin{equation}
+	\alpha_1 = \frac{\beta_1}{\beta_2}
+\end{equation}
+Inserting into \autoref{eq:rel-changes-lim-zero}, it gives us,
+\begin{equation}
+	\beta_2 = \alpha_2
+\end{equation}
+
+We can then compare the two formulas for $\mu(t)$,
+\begin{align*}
+	\beta_1 e^{-\beta_2 t} 
+		&= \alpha_1 \beta_2 e^{-\beta_2 t} \\
+	\iff \beta_1 
+		&= \alpha_1 \beta_2 = \alpha_1 \alpha_2
+\end{align*}
+
+And compare the twos relative changes,
+\begin{align*}
+	\beta_0 \exp\left( \alpha_1 (1 - e^{-\alpha_2 t}) \right)
+		&= \alpha_0 \exp(-\alpha_1 e^{-\alpha_2 t}) \\
+	\iff \beta_0 e^{\alpha_1} 
+		&= \alpha_0 \\
+	\iff \beta_0
+		&= \frac{\alpha_0}{e^{\alpha_1}}
+\end{align*}
+
+To summarize, we found the following relations linking the $\alpha_k$ and $\beta_k$,
+\begin{equation}
+	\begin{cases}
+		\beta_0 &= \frac{\alpha_0}{e^{\alpha_1}} \\
+		\beta_1 &= \alpha_1 \alpha_2 \\
+		\beta_2 &= \alpha_2
+	\end{cases}
+\end{equation}

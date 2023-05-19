@@ -50,6 +50,23 @@ df <- read.table("dataset/TumorGrowth.txt")
 head(df)
 ```
 
+```{r}
+# formulas linking alpha_k and beta_k
+alpha <- function(theta) {
+  exp(theta)
+}
+
+beta <- function(alpha) {
+  beta <- numeric(length(alpha))
+  
+  beta[1] <- alpha[1] / exp(alpha[2])
+  beta[2] <- alpha[2] * alpha[3]
+  beta[3] <- alpha[3]
+  
+  return(beta)
+}
+```
+
 # 2.b
 
 R function to compute the log-likelihood $L(\vec{\alpha}|\mathcal{D}_i)$ given parameter values $\theta_k = \log(\theta_k)$ and data $D_i$
@@ -351,12 +368,39 @@ ggplot(df) +
 ### 3.d
 
 ```{r}
-point_estimate(metropolis.cw.mcmc)
+# applying transformation formulas (theta -> alpha -> beta)
+metropolis.cw.results$beta.burnin <- data.frame(metropolis.cw.results$theta.burnin) %>%
+  rowwise() %>%
+  summarise(
+    alpha0 = exp(theta0),
+    alpha1 = exp(theta1), 
+    alpha2 = exp(theta2)
+  ) %>%
+  rowwise() %>%
+  summarise(
+    beta0 = alpha0 / exp(alpha1),
+    beta1 = alpha1 * alpha2,
+    beta2 = alpha2
+  )
+```
+
+```{r}
+# point estimates for theta
+point_estimate(as.mcmc(metropolis.cw.results$beta.burnin))
 ```
 
 ```{r}
 # 95% credible regions
-HPDinterval(metropolis.cw.mcmc)
+HPDinterval(as.mcmc(metropolis.cw.results$beta.burnin))
+
+mcmc_areas(
+  x = as.mcmc(metropolis.cw.results$beta.burnin), 
+  prob = 0.95
+) +
+  labs(
+    title = "Posterior distribution",
+    subtitle = "Median and 95% credible region"
+  )
 ```
 
 ### 3.e
@@ -560,12 +604,29 @@ ggplot(df) +
 ```
 
 ```{r}
-point_estimate(metropolis.vw.mcmc)
+# applying transformation formulas (theta -> alpha -> beta)
+metropolis.vw.results$beta.burnin <- data.frame(metropolis.vw.results$theta.burnin) %>%
+  rowwise() %>%
+  summarise(
+    alpha0 = exp(theta0),
+    alpha1 = exp(theta1), 
+    alpha2 = exp(theta2)
+  ) %>%
+  rowwise() %>%
+  summarise(
+    beta0 = alpha0 / exp(alpha1),
+    beta1 = alpha1 * alpha2,
+    beta2 = alpha2
+  )
+```
+
+```{r}
+point_estimate(as.mcmc(metropolis.vw.results$beta.burnin))
 ```
 
 ```{r}
 # 95% credible regions
-HPDinterval(metropolis.vw.mcmc)
+HPDinterval(as.mcmc(metropolis.vw.results$beta.burnin))
 ```
 
 ### 5.a. 
@@ -662,4 +723,68 @@ point_estimate(model_run.mcmc)
 
 ```{r}
 HPDinterval(model_run.mcmc)
+```
+
+# 6.a
+
+```{r}
+# jags code
+model_string.hierarchical <- "
+  model {
+    alpha0[i] <- exp(theta0[i])
+    alpha1[i] <- exp(theta1[i])
+    alpha2[i] <- exp(theta2[i])
+  
+    # likelihood
+    for (i in 1:n) {
+      y[i, ] ~ dpois(mu[i])
+      log(mu[i]) <- log(alpha0[i]) - (alpha1[i] * exp(- alpha2[i] * t[i]))
+    }
+    
+    # priors slightly vary accross the experiments
+    for (j in 1:m) {
+      # Priors 
+      theta0[i] ~ dnorm(mu0, tau0)
+      theta1[i] ~ dnorm(mu1, tau1)
+      theta2[i] ~ dnorm(mu2, tau2)
+    }
+    
+    # Hyperpriors
+    mu0 ~ dnorm(theta0.mean, 0.1)
+    tau0 ~ dgamma(0.1, 0.1)
+    
+    mu0 ~ dnorm(theta1.mean, 0.1)
+    tau0 ~ dgamma(0.1, 0.1)
+    
+    mu0 ~ dnorm(theta2.mean, 0.1)
+    tau0 ~ dgamma(0.1, 0.1)
+  }
+"
+
+# set-up data
+model_data.hierarchical <- list(
+  n = nrow(df), 
+  m = ncol(df), 
+  y = df %>% select(-day),
+  t = df$day
+)
+
+# parameters to watch
+model_parameters.hierarchical <- c("theta0", "theta1", "theta2")
+
+# let's run the model
+model_run.hierarchical <- jags(
+  data = model_data,
+  parameters.to.save = model_parameters,
+  model.file = textConnection(model_string),
+  n.chains = 3,
+  n.iter = N_STEPS,
+  n.burnin = N_BURNIN
+)
+
+model_run.hierarchical.mcmc <- as.mcmc(model_run.hierarchical)
+```
+
+```{r}
+point_estimate(model_run.hierarchical.mcmc)
 ```
