@@ -85,9 +85,9 @@ The mean for each $\bm{\theta}$ parameter is the same as for the component-wise 
 	\label{fig:metropolis-vw-fitted-curve}
 \end{figure}
 
-\subsubsection*{Point estimate and $\SI{95}{\percent}$ credible region}
+\subsubsection*{Point estimate and $\SI{95}{\percent}$ credible region for $\beta$}
 
-Following what we said above, obviously we get the point estimate and credible regions for the $\bm{\beta}$ parameters.
+Following what we said above, obviously we get similar point estimates and credible regions for the $\bm{\beta}$ parameters as well as for the expected number of cancer cells at $t = 0$. We get however a higher mean and median as well as a larger credible region for the expected number of cancer cells at $t = +\infty$.
 
 \begin{table}[H]
 	\parbox{0.45\linewidth}{
@@ -112,5 +112,31 @@ Following what we said above, obviously we get the point estimate and credible r
 		\end{tabular}
 		\caption{$\SI{95}{\percent}$ credible region for $\bm{\beta}$}
 		\label{tab:metropolis-vw-credible-region}
+	}
+\end{table}
+
+\subsubsection*{Point estimate and $\SI{95}{\percent}$ credible region for the expected number of cancer cells}
+
+\begin{table}[H]
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter 						& Median 		& Mean \\ \hline 
+			$\Exp\left[ y(0) \right]$ 		& $23.24$ 		& $23.28$ \\ 
+			$\Exp\left[ y(+\infty) \right]$ & $905.8544$ 	& $907.4135$ \\ \hline
+		\end{tabular}
+		\caption{Point estimates for the expected number of cancer cells}
+		\label{tab:metropolis-vw-point-estimates-cancer-cells}
+	}
+	\hfill
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter 						& Lower 		& Upper \\ \hline 
+			$\Exp\left[ y(0) \right]$ 		& $20.3473$  	& $26.9723$ \\ 
+			$\Exp\left[ y(+\infty) \right]$ & $489.2865$ 	& $726.2642$ \\ \hline
+		\end{tabular}
+		\caption{$\SI{95}{\percent}$ credible region expected number of cancer cells}
+		\label{tab:metropolis-vw-credible-region-cancer-cells}
 	}
 \end{table}

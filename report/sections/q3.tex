@@ -156,3 +156,43 @@ Using the relations found in the first question, we can find the estimations for
 \end{table}
 
 \textbf{e)} Provide a point estimates and $\SI{95}{\percent}$ credible region for the expected number of cancer cells at time $t = 0$ and $t = +\infty$ for experiment $1$.
+
+The expectation value of a Poisson distribution $y(t) \sim P(\mu(t))$ is given by, 
+\begin{equation}
+	\Exp\left[ y(t) \right] = \mu(t)
+\end{equation}
+
+Therefore at time $t = 0$ and $t = +\infty$ we have, 
+\begin{equation}
+	\begin{array}{rl}
+		\Exp\left[ y(0) \right] = \lim_{t \rightarrow 0} \mu(t) = \beta_0 
+		\quad ; \quad 
+		\Exp\left[ y(+\infty) \right] = \lim_{t \rightarrow +\infty} \mu(t) = \beta_0 \exp\left( \frac{\beta_1}{\beta_2} \right)
+	\end{array}
+\end{equation}
+
+Using the values found at the preceding sub-question, we find a point estimates and $\SI{95}{\percent}$ credible regions for the expected number of cancer cells at these times.
+
+\begin{table}[H]
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter 						& Median 		& Mean \\ \hline 
+			$\Exp\left[ y(0) \right]$ 		& $23.25$ 		& $23.28$ \\ 
+			$\Exp\left[ y(+\infty) \right]$ & $906.2442$ 	& $906.2442$ \\ \hline
+		\end{tabular}
+		\caption{Point estimates for the expected number of cancer cells}
+		\label{tab:metropolis-cw-point-estimates-cancer-cells}
+	}
+	\hfill
+	\parbox{0.45\linewidth}{
+		\centering
+		\begin{tabular}{|c|c|c|} \hline 
+			Parameter 						& Lower 		& Upper \\ \hline 
+			$\Exp\left[ y(0) \right]$ 		& $20.5347$  	& $26.0316$ \\ 
+			$\Exp\left[ y(+\infty) \right]$ & $483.9718$ 	& $685.8754$ \\ \hline
+		\end{tabular}
+		\caption{$\SI{95}{\percent}$ credible region expected number of cancer cells}
+		\label{tab:metropolis-cw-credible-region-cancer-cells}
+	}
+\end{table}

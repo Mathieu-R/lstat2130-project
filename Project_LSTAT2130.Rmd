@@ -31,11 +31,13 @@ library(coda)
 library(mvtnorm)
 
 library(patchwork)
+library(latex2exp)
 library(progress)
 ```
 
 ```{r}
 set.seed(123)
+rm(list = ls())
 ```
 
 ```{r}
@@ -403,34 +405,11 @@ mcmc_areas(
   )
 ```
 
-### 3.e
-
 ```{r}
-metropolis.cw.results.t0 <- metropolis.cw(
-  theta.init = c(5.5, 0.98, 0.01),
-  sd.proposals = sd.proposals,
-  t = c(0),
-  experiment = df$Exp1,
-  n_steps = N_STEPS
-)
+23.25 * exp(0.02 / 5.46e-3)
 
-# goal is to reach an acceptance rate of 0.4
-metropolis.cw.results.t0$accept.rate
-```
-
-```{r}
-max.int <- as.integer64(.Machine$integer.max) + 1L
-
-metropolis.cw.results.tinf <- metropolis.cw(
-  theta.init = c(5.5, 0.98, 0.01),
-  sd.proposals = sd.proposals,
-  t = c(max.int),
-  experiment = df$Exp1,
-  n_steps = N_STEPS
-)
-
-# goal is to reach an acceptance rate of 0.4
-metropolis.cw.results.tinf$accept.rate
+20.534731355 * exp(0.016038715 / 0.005075689)
+26.031654809 * exp(0.019170682 / 0.005860116)
 ```
 
 ### 4.a
@@ -629,7 +608,15 @@ point_estimate(as.mcmc(metropolis.vw.results$beta.burnin))
 HPDinterval(as.mcmc(metropolis.vw.results$beta.burnin))
 ```
 
-### 5.a. 
+```{r}
+23.24 * exp(0.02 / 5.46e-3)
+23.28 * exp(0.02 / 5.46e-3)
+
+20.3473 * exp(0.0159 / 0.0050)
+26.9723 * exp(0.0191 / 0.0058)
+```
+
+### 5.a 
 
 ```{r}
 # jags code
@@ -723,6 +710,45 @@ point_estimate(model_run.mcmc)
 
 ```{r}
 HPDinterval(model_run.mcmc)
+```
+
+### 5.b
+
+```{r}
+# sample the predictive number of cancer cells at time t = +\infty
+
+# first, we retrieve the predictive posterior simulated using jags: p(\theta | D_1)
+theta.jags_sample <- data.frame(as.matrix(model_run.mcmc))
+
+# we know y ~ Pois(mu(t)) where mu(t) is given in term of alpha = exp(theta)
+# since we're interested in the expected number of cancer cells at t = +\infty,
+# we find that \mu(t) = alpha0
+sample.size <- N_STEPS - N_BURNIN
+alpha0 = exp(theta.jags_sample$theta0)
+y.sample <- rpois(n = sample.size, lambda = alpha0)
+
+# point estimates
+y.mean <- mean(y.sample)
+y.median <- median(y.sample)
+
+y.credible_region <- quantile(y.sample, probs = c(.025, 0.975))
+
+y.mean
+y.median
+y.credible_region
+```
+```{r}
+ggplot(data.frame(x = y.sample), aes(x = x)) + 
+  geom_density(fill = "lightgray", alpha = 0.5) +
+  geom_vline(xintercept = y.mean, color = "blue", linetype ="dashed") +
+  #geom_errorbarh(aes(y = 0, xmin = y.credible_region[1], xmax = y.credible_region[2]), height = 0.2, color = "red") +
+  labs(
+    title = "Predictive sample",
+    subtitle = TeX("Expected number of cancer cells at t = $+\\infty$"),
+    x = "Expected number of cancer cells",
+    y = "Density"
+  ) +
+  theme_minimal()
 ```
 
 # 6.a
